@@ -112,22 +112,30 @@ Before you begin, ensure you have the following installed on your system:
    - `express` - Web framework for Node.js
    - `sqlite` - SQLite database wrapper
    - `sqlite3` - SQLite database driver
+   - `dotenv` - Environment variable management
 
-3. **Initialize the database**:
+3. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` if you need to change default values (optional).
+
+4. **Initialize the database**:
    ```bash
    node createTable.js
    ```
    
    This creates the `products` table in the SQLite database.
 
-4. **Seed the database with sample data**:
+5. **Seed the database with sample data**:
    ```bash
    node seedTable.js
    ```
    
    This populates the database with initial product records.
 
-5. **Verify installation**:
+6. **Verify installation**:
    ```bash
    npm start
    ```
@@ -177,43 +185,61 @@ Press `Ctrl + C` (or `Cmd + C` on macOS) in the terminal to stop the server.
 
 ## ⚙️ Environment Configuration
 
-Currently, Spiral Sounds uses **hardcoded configuration values**. For production deployments, we recommend using environment variables.
+Spiral Sounds uses **environment variables** for configuration, making it easy to customize settings for different environments (development, staging, production).
 
-### Current Configuration
+### Setup
 
-The application uses the following default settings:
+1. **Copy the example environment file**:
+   ```bash
+   cp .env.example .env
+   ```
 
-- **Port**: `8000` (defined in `server.js`)
-- **Database**: `database.db` (SQLite file in project root)
-- **Static Files**: `public/` directory
+2. **Edit `.env`** with your configuration values:
+   ```env
+   PORT=8000
+   DB_PATH=database.db
+   NODE_ENV=development
+   ```
 
-### Recommended Environment Variables
+### Available Environment Variables
 
-To make the application more flexible, you can modify `server.js` to use environment variables:
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8000` | Port number for the Express server |
+| `DB_PATH` | `database.db` | Path to the SQLite database file |
+| `NODE_ENV` | `development` | Environment mode (development, production, test) |
 
-```javascript
-// Example: Using environment variables
-const PORT = process.env.PORT || 8000
-const DB_PATH = process.env.DB_PATH || 'database.db'
-```
+### Configuration Files
 
-Create a `.env` file in the project root:
+- **`.env`** - Your local environment variables (not committed to git)
+- **`.env.example`** - Template file showing available variables (committed to git)
 
-```env
-PORT=8000
-DB_PATH=database.db
-NODE_ENV=development
-```
+### Implementation
 
-**Note**: To use `.env` files, you'll need to install `dotenv`:
-```bash
-npm install dotenv
-```
+The application automatically loads environment variables using `dotenv`:
 
-Then add to the top of `server.js`:
+**server.js:**
 ```javascript
 import 'dotenv/config'
+const PORT = process.env.PORT || 8000
 ```
+
+**db/db.js:**
+```javascript
+import 'dotenv/config'
+const dbPath = path.join(process.env.DB_PATH || 'database.db')
+```
+
+### Production Deployment
+
+For production deployments, set environment variables directly on your hosting platform:
+
+- **Heroku**: Use `heroku config:set PORT=8000`
+- **Vercel**: Add variables in project settings
+- **Railway/Render**: Set in environment variables section
+- **Docker**: Use `-e` flag or `.env` file
+
+**Important**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
 
 ---
 
@@ -248,6 +274,8 @@ Fullstack_Express_Scrimba/
 │
 ├── 📄 package.json              # Project dependencies and scripts
 ├── 📄 package-lock.json         # Dependency lock file
+├── 📄 .env.example              # Environment variables template
+├── 📄 .gitignore                # Git ignore rules
 └── 📄 README.md                 # Project documentation
 ```
 
@@ -554,6 +582,7 @@ CREATE TABLE IF NOT EXISTS products (
 - **Express.js** - Fast, unopinionated web framework
 - **SQLite3** - Lightweight, file-based database
 - **sqlite** - Modern SQLite wrapper for Node.js
+- **dotenv** - Environment variable management
 
 ### Frontend
 - **HTML5** - Semantic markup
