@@ -23,6 +23,17 @@ async function createTable() {
       
       `)
 
+      // Create users table for authentication
+      await db.exec(`
+            CREATE TABLE IF NOT EXISTS users (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  email TEXT NOT NULL UNIQUE,
+                  password TEXT NOT NULL,
+                  name TEXT,
+                  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+      `)
+
       await db.close()
       console.log('table created')
 }
