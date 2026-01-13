@@ -314,6 +314,29 @@ async function getProducts(filters = {}) {
 
 function renderProducts(products) {
   const albumsContainer = document.getElementById('products-container')
+  const productCountEl = document.getElementById('product-count')
+  
+  // Update product count
+  if (productCountEl) {
+    if (products.length === 0) {
+      productCountEl.textContent = 'No products found'
+      productCountEl.style.opacity = '0.7'
+    } else {
+      productCountEl.textContent = `${products.length} ${products.length === 1 ? 'product' : 'products'} found`
+      productCountEl.style.opacity = '1'
+    }
+  }
+  
+  if (products.length === 0) {
+    albumsContainer.innerHTML = `
+      <div class="no-products-message">
+        <p>No products match your search criteria.</p>
+        <p>Try adjusting your filters or search terms.</p>
+      </div>
+    `
+    return
+  }
+  
   const cards = products.map((album) => {
     return `
       <div class="product-card">
@@ -396,4 +419,20 @@ document.getElementById('genre-select').addEventListener('change', async (e) => 
   const genre = e.target.value
   const products = await getProducts(genre ? { genre } : {})
   renderProducts(products)
+})
+
+// ===== Keyboard Shortcuts =====
+// Press "/" to focus search input (when not typing in an input)
+document.addEventListener('keydown', (e) => {
+  // Only trigger if not already typing in an input/textarea
+  if (e.key === '/' && 
+      document.activeElement.tagName !== 'INPUT' && 
+      document.activeElement.tagName !== 'TEXTAREA' &&
+      !loginModal.classList.contains('active')) {
+    e.preventDefault()
+    const searchInput = document.getElementById('search-input')
+    if (searchInput) {
+      searchInput.focus()
+    }
+  }
 })
