@@ -17,9 +17,12 @@
     <nav class="header-menu" aria-label="Main menu">
       <a href="#" id="login-link">Login</a>
       <a href="#">Cart</a>
-      <form role="search">
+      <form role="search" class="search-form">
         <label for="search-input" class="visually-hidden">Search products</label>
-        <input type="text" placeholder="Search..." id="search-input">
+        <div class="search-input-wrapper">
+          <input type="text" placeholder="Search..." id="search-input">
+          <button type="button" class="search-clear" id="search-clear" aria-label="Clear search" style="display: none;">&times;</button>
+        </div>
       </form>
     </nav>
   </div>

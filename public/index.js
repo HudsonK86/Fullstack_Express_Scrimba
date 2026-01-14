@@ -398,15 +398,37 @@ async function applySearchFilter() {
   renderProducts(products)
 }
 
+// ===== Search Clear Button =====
+const searchInput = document.getElementById('search-input')
+const searchClear = document.getElementById('search-clear')
+
+// Show/hide clear button based on input value
+function toggleClearButton() {
+  if (searchInput.value.trim()) {
+    searchClear.style.display = 'block'
+  } else {
+    searchClear.style.display = 'none'
+  }
+}
+
+// Clear search input
+searchClear.addEventListener('click', () => {
+  searchInput.value = ''
+  searchClear.style.display = 'none'
+  applySearchFilter()
+  searchInput.focus()
+})
+
 // ===== Event Listeners =====
 
-document.getElementById('search-input').addEventListener('input', (e) => {
+searchInput.addEventListener('input', (e) => {
   e.preventDefault()
+  toggleClearButton()
   applySearchFilter()
 })
 
 // prevent 'enter' from submitting
-document.getElementById('search-input').addEventListener('submit', (e) => {
+searchInput.addEventListener('submit', (e) => {
   e.preventDefault()
 })
 
