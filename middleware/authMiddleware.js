@@ -64,7 +64,7 @@ export function authenticateToken(req, res, next) {
     }
 
     // For any other errors (e.g., malformed token, server error)
-    console.error('Token verification error:', err)
+    console.error('Token verification error:', err.name, err.message)
     return res.status(401).json({ 
       error: 'Authentication failed' 
     })
