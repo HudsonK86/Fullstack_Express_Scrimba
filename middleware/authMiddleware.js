@@ -26,6 +26,14 @@ export function authenticateToken(req, res, next) {
     })
   }
 
+  // Validate JWT_SECRET is configured
+  if (!process.env.JWT_SECRET) {
+    console.error('FATAL ERROR: JWT_SECRET is not defined')
+    return res.status(500).json({ 
+      error: 'Server configuration error' 
+    })
+  }
+
   try {
     // Step 2: Verify the token
     // jwt.verify() checks:
@@ -49,8 +57,16 @@ export function authenticateToken(req, res, next) {
       })
     }
     
-    return res.status(403).json({ 
-      error: 'Invalid token' 
+    if (err.name === 'JsonWebTokenError') {
+      return res.status(401).json({ 
+        error: 'Invalid token' 
+      })
+    }
+
+    // For any other errors (e.g., malformed token, server error)
+    console.error('Token verification error:', err.name, err.message)
+    return res.status(401).json({ 
+      error: 'Authentication failed' 
     })
   }
 }

@@ -3,6 +3,13 @@ import express from 'express'
 import { productsRouter } from './routes/products.js'
 import { authRouter } from './routes/auth.js'
 
+// Validate JWT_SECRET is configured
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined in .env file')
+  console.error('Please add JWT_SECRET to your .env file')
+  process.exit(1)
+}
+
 const app = express()
 const PORT = process.env.PORT || 8000
 
