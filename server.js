@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import { productsRouter } from './routes/products.js'
 import { authRouter } from './routes/auth.js'
+import { healthRouter } from './routes/health.js'
 
 // Validate JWT_SECRET is configured
 if (!process.env.JWT_SECRET) {
@@ -20,6 +21,7 @@ app.use(express.json())
 app.use(express.static('public'))
 
 // API Routes
+app.use('/api/health', healthRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/auth', authRouter)
  

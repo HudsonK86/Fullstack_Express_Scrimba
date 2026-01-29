@@ -476,6 +476,53 @@ http://localhost:8000/api
 
 ### Endpoints
 
+#### Health Check
+
+Monitor application and database status.
+
+```http
+GET /api/health
+```
+
+**Example Request:**
+```bash
+curl http://localhost:8000/api/health
+```
+
+**Example Response (Healthy):**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-01-29T15:35:00.000Z",
+  "uptime": {
+    "seconds": 3600,
+    "formatted": "1h 0m 0s"
+  },
+  "database": {
+    "status": "connected"
+  }
+}
+```
+
+**Example Response (Unhealthy):**
+```json
+{
+  "status": "unhealthy",
+  "timestamp": "2026-01-29T15:35:00.000Z",
+  "database": {
+    "status": "disconnected",
+    "error": "Database connection failed"
+  }
+}
+```
+
+**Status Codes:**
+- `200 OK` - Application is healthy
+- `503 Service Unavailable` - Application is unhealthy (database issues)
+
+---
+
+
 #### Get All Products
 
 Retrieve all products with optional filtering and search.
