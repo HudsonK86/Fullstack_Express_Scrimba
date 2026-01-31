@@ -24,7 +24,16 @@ app.use(express.static('public'))
 app.use('/api/health', healthRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/auth', authRouter)
- 
+
+// 404 handler for unknown API routes (returns JSON for API consistency)
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'Not found',
+    message: `Cannot ${req.method} ${req.originalUrl}`,
+    path: req.originalUrl
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
 }).on('error', (err) => {
