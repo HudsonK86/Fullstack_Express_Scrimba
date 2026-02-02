@@ -1,77 +1,61 @@
-import { getDBConnection } from '../db/db.js'
+import { getDBConnection } from '../db/db.js';
 
 export async function getGenres(req, res) {
-
   try {
+    const db = await getDBConnection();
 
-    const db = await getDBConnection()
-
-    const genreRows = await db.all('SELECT DISTINCT genre FROM products')
-    const genres = genreRows.map(row => row.genre)
-    res.json(genres)
-
+    const genreRows = await db.all('SELECT DISTINCT genre FROM products');
+    const genres = genreRows.map((row) => row.genre);
+    res.json(genres);
   } catch (err) {
-
-    res.status(500).json({error: 'Failed to fetch genres', details: err.message})
-
+    res
+      .status(500)
+      .json({ error: 'Failed to fetch genres', details: err.message });
   }
 }
 
 export async function getProducts(req, res) {
-
   try {
+    const db = await getDBConnection();
 
-    const db = await getDBConnection()
+    let query = 'SELECT * FROM products';
+    let params = [];
 
-    let query = 'SELECT * FROM products'
-    let params = []
-
-    const { genre, search } = req.query
+    const { genre, search } = req.query;
 
     if (genre) {
-
-      query += ' WHERE genre = ?'
-      params.push(genre)
-
+      query += ' WHERE genre = ?';
+      params.push(genre);
     } else if (search) {
-
-      query += ' WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ?'
-      const searchPattern = `%${search}%`
-      params.push(searchPattern, searchPattern, searchPattern)
-      
+      query += ' WHERE title LIKE ? OR artist LIKE ? OR genre LIKE ?';
+      const searchPattern = `%${search}%`;
+      params.push(searchPattern, searchPattern, searchPattern);
     }
-    
-    const products = await db.all(query, params)
 
-    res.json(products)
+    const products = await db.all(query, params);
 
-
+    res.json(products);
   } catch (err) {
-
-    res.status(500).json({error: 'Failed to fetch products', details: err.message})
-
+    res
+      .status(500)
+      .json({ error: 'Failed to fetch products', details: err.message });
   }
-
 }
 
 export async function getProductById(req, res) {
-
   try {
-
-    const db = await getDBConnection()
-    const { id } = req.params
-    const product = await db.get('SELECT * FROM products WHERE id = ?', [id])
+    const db = await getDBConnection();
+    const { id } = req.params;
+    const product = await db.get('SELECT * FROM products WHERE id = ?', [id]);
 
     if (!product) {
-      return res.status(404).json({ error: 'Product not found', id })
+      return res.status(404).json({ error: 'Product not found', id });
     }
 
-    res.json(product)
-
+    res.json(product);
   } catch (err) {
-
-    res.status(500).json({ error: 'Failed to fetch product', details: err.message })
-
+    res
+      .status(500)
+      .json({ error: 'Failed to fetch product', details: err.message });
   }
-
 }
