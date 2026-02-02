@@ -53,3 +53,25 @@ export async function getProducts(req, res) {
   }
 
 }
+
+export async function getProductById(req, res) {
+
+  try {
+
+    const db = await getDBConnection()
+    const { id } = req.params
+    const product = await db.get('SELECT * FROM products WHERE id = ?', [id])
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found', id })
+    }
+
+    res.json(product)
+
+  } catch (err) {
+
+    res.status(500).json({ error: 'Failed to fetch product', details: err.message })
+
+  }
+
+}
