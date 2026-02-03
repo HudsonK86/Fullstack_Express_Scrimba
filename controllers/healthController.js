@@ -22,6 +22,10 @@ export async function getHealth(req, res) {
       },
       database: {
         status: 'connected'
+      },
+      environment: process.env.NODE_ENV || 'development',
+      server: {
+        port: Number(process.env.PORT) || 8000
       }
     })
   } catch (error) {
@@ -31,6 +35,10 @@ export async function getHealth(req, res) {
       database: {
         status: 'disconnected',
         error: error.message
+      },
+      environment: process.env.NODE_ENV || 'development',
+      server: {
+        port: Number(process.env.PORT) || 8000
       }
     })
   }
